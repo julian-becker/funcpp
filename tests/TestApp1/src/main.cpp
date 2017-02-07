@@ -6,10 +6,13 @@
 #include <typeclass/eq.h>
 #include <typeclass/eq_primitive.h>
 #include <typeclass/eq_list.h>
+#include <typeclass/monoid.h>
+#include <typeclass/monoid_primitive.h>
 
 
-#define ASSERT(cond) if(!(cond)) throw  "Assertion that " #cond " failed"
-#define ASSERT_NOT(cond) if(cond) throw "Assertion that not " #cond " failed"
+
+#define ASSERT(...) if(!(__VA_ARGS__)) throw  "Assertion that " #__VA_ARGS__ " failed"
+#define ASSERT_NOT(...) if(__VA_ARGS__) throw "Assertion that not " #__VA_ARGS__ " failed"
 
 using namespace funcpp::typeclass;
 
@@ -39,16 +42,28 @@ void testEqList() {
 }
 
 void testFunctorInstance() {
-	static_assert(functor::is_instance_v<std::list>);
-	static_assert(functor::is_instance_v<std::vector>);
-	static_assert(functor::is_instance_v<std::experimental::optional>);
+	using namespace functor;
+	static_assert(is_instance_v<std::list>);
+	static_assert(is_instance_v<std::vector>);
+	static_assert(is_instance_v<std::experimental::optional>);
 }
 
 void testFunctorList() {
 	std::list<int> in {1,2,3};
 	std::list<double> out = functor::fmap([](int x) { return 2.0*x; }, in);
+}
 
-
+void testMonoidPrimitive() {
+	using namespace monoid;
+	static_assert(is_instance_v<int>);
+	static_assert(is_instance_v<int,std::plus<int>>);
+	static_assert(is_instance_v<int,std::multiplies<int>>);
+	static_assert(is_instance_v<unsigned char>);
+	static_assert(is_instance_v<unsigned char,std::plus<unsigned char>>);
+	static_assert(is_instance_v<unsigned char,std::multiplies<unsigned char>>);
+	ASSERT(42+100 == mappend(42,100));
+	ASSERT(42+100 == mappend<int,std::plus<int>>(42,100));
+	ASSERT(42*100 == mappend<int,std::multiplies<int>>(42,100));
 }
 
 int main() {
@@ -56,6 +71,7 @@ int main() {
 		testEqPrimitive();
 		testEqList();
 		testFunctorInstance();
+		testMonoidPrimitive();
 
 		std::cout << "***************************************\n";
 		std::cout << "**  ALL TESTS OK                     **\n";

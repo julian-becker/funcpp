@@ -8,6 +8,7 @@
 #include <typeclass/eq_list.h>
 #include <typeclass/monoid.h>
 #include <typeclass/monoid_primitive.h>
+#include <typeclass/monoid_list.h>
 
 
 
@@ -66,12 +67,20 @@ void testMonoidPrimitive() {
 	ASSERT(42*100 == mappend<int,std::multiplies<int>>(42,100));
 }
 
+void testMonoidList() {
+	using namespace monoid;
+	static_assert(is_instance_v<std::list<int>,std::plus<void>>);
+	std::list<int> a{1,2,3,4}, b{1,2}, c{3,4};
+	ASSERT(a == b + c);
+}
+
 int main() {
 	try {
 		testEqPrimitive();
 		testEqList();
 		testFunctorInstance();
 		testMonoidPrimitive();
+		testMonoidList();
 
 		std::cout << "***************************************\n";
 		std::cout << "**  ALL TESTS OK                     **\n";

@@ -9,6 +9,9 @@
 #include <typeclass/monoid.h>
 #include <typeclass/monoid_primitive.h>
 #include <typeclass/monoid_list.h>
+#include <typeclass/monad.h>
+#include <typeclass/monad_list.h>
+#include <boost/variant.hpp>
 
 
 
@@ -74,6 +77,15 @@ void testMonoidList() {
 	ASSERT(a == b + c);
 }
 
+void testMonadList() {
+	using namespace monad;
+	static_assert(is_instance_v<std::list>);
+	std::list<int> a{42}, b{1,2}, c{3,4};
+	ASSERT(a == instance<std::list>::mreturn(42));
+	ASSERT(std::list<int>{84} == (instance<std::list>::mreturn(42) >>= [](int x){ return instance<std::list>::mreturn(2*x); }));
+	ASSERT(a >> std::list<int>{72} == std::list<int>{72});
+}
+
 int main() {
 	try {
 		testEqPrimitive();
@@ -81,6 +93,8 @@ int main() {
 		testFunctorInstance();
 		testMonoidPrimitive();
 		testMonoidList();
+		testMonadList();
+
 
 		std::cout << "***************************************\n";
 		std::cout << "**  ALL TESTS OK                     **\n";

@@ -3,14 +3,15 @@
 #include <typeclass/functor_list.h>
 #include <typeclass/functor_vector.h>
 #include <typeclass/functor_optional.h>
-#include <typeclass/eq.h>
 #include <typeclass/eq_primitive.h>
 #include <typeclass/eq_list.h>
+#include <typeclass/eq.h>
 #include <typeclass/monoid.h>
 #include <typeclass/monoid_primitive.h>
 #include <typeclass/monoid_list.h>
 #include <typeclass/monad.h>
 #include <typeclass/monad_list.h>
+#include <typeclass/monad_free.h>
 #include <boost/variant.hpp>
 
 
@@ -22,34 +23,17 @@ using namespace funcpp::typeclass;
 
 void testEqPrimitive() {
 	using namespace funcpp::typeclass::eq;
-	static_assert(is_instance_v<char>);
-	static_assert(is_instance_v<signed char>);
-	static_assert(is_instance_v<unsigned char>);
-	static_assert(is_instance_v<short>);
-	static_assert(is_instance_v<signed short>);
-	static_assert(is_instance_v<unsigned short>);
-	static_assert(is_instance_v<int>);
-	static_assert(is_instance_v<signed int>);
-	static_assert(is_instance_v<unsigned int>);
-	ASSERT(instance<int>::equal(1,1));
-	ASSERT_NOT(instance<int>::equal(2,1));
-	ASSERT(instance<double>::equal(1.0,1.0));
-	ASSERT_NOT(instance<double>::equal(1.1,1.0));
+	ASSERT(equal(1,1));
+	ASSERT_NOT(equal(2,1));
+	ASSERT(equal(1.0,1.0));
+	ASSERT_NOT(equal(1.1,1.0));
 }
 
 void testEqList() {
 	using namespace funcpp::typeclass::eq;
-	static_assert(is_instance_v<std::list<int>>);
-	ASSERT(instance<std::list<int>>::equal({1,2,3},{1,2,3}));
-	ASSERT_NOT(instance<std::list<int>>::equal({1,2,3},{1,0,3}));
-	ASSERT_NOT(instance<std::list<int>>::equal({0,2,3},{1,0,3}));
-}
-
-void testFunctorInstance() {
-	using namespace functor;
-	static_assert(is_instance_v<std::list>);
-	static_assert(is_instance_v<std::vector>);
-	static_assert(is_instance_v<std::experimental::optional>);
+	ASSERT(equal(std::list<int>{1,2,3},std::list<int>{1,2,3}));
+	ASSERT_NOT(equal(std::list<int>{1,2,3},std::list<int>{1,0,3}));
+	ASSERT_NOT(equal(std::list<int>{0,2,3},std::list<int>{1,0,3}));
 }
 
 void testFunctorList() {
@@ -59,12 +43,6 @@ void testFunctorList() {
 
 void testMonoidPrimitive() {
 	using namespace monoid;
-	static_assert(is_instance_v<int>);
-	static_assert(is_instance_v<int,std::plus<int>>);
-	static_assert(is_instance_v<int,std::multiplies<int>>);
-	static_assert(is_instance_v<unsigned char>);
-	static_assert(is_instance_v<unsigned char,std::plus<unsigned char>>);
-	static_assert(is_instance_v<unsigned char,std::multiplies<unsigned char>>);
 	ASSERT(42+100 == mappend(42,100));
 	ASSERT(42+100 == mappend<int,std::plus<int>>(42,100));
 	ASSERT(42*100 == mappend<int,std::multiplies<int>>(42,100));
@@ -72,28 +50,86 @@ void testMonoidPrimitive() {
 
 void testMonoidList() {
 	using namespace monoid;
-	static_assert(is_instance_v<std::list<int>,std::plus<void>>);
 	std::list<int> a{1,2,3,4}, b{1,2}, c{3,4};
 	ASSERT(a == b + c);
 }
 
 void testMonadList() {
 	using namespace monad;
-	static_assert(is_instance_v<std::list>);
 	std::list<int> a{42}, b{1,2}, c{3,4};
-	ASSERT(a == instance<std::list>::mreturn(42));
+	ASSERT(a == mreturn<std::list>(42));
 	ASSERT(std::list<int>{84} == (instance<std::list>::mreturn(42) >>= [](int x){ return instance<std::list>::mreturn(2*x); }));
 	ASSERT(a >> std::list<int>{72} == std::list<int>{72});
+}
+
+
+using unit = std::tuple<>;
+
+template <typename Next>
+struct Prog {
+	struct Read {
+		std::function<Next(int)> next;
+	};
+
+	template <typename F>
+	static Prog<std::result_of_t<F(int)>> read(F next) {
+	  return { Read{next} };
+	}
+
+	struct Write {
+		int x;
+		std::function<Next(unit)> next;
+	};
+
+	template <typename F>
+	static Prog<std::result_of_t<F(unit)>> write(int x, F next) {
+		return { Write{x, next} };
+	}
+	boost::variant<Read, Write> v;
+};
+
+
+template <typename Fun, typename Next>
+Prog<std::result_of_t<Fun(Next)>> 
+fmap(Fun&& fun, const Prog<Next>& prog) {
+	using Res = std::result_of_t<Fun(Next)>;
+	struct Visitor {
+		Fun& fun;
+		// fmap f (Read n) = Read (f . n)
+		Prog<Res> operator()(const typename Prog<Next>::Read& read) const {
+			return Prog<Res>::read(compose(fun, read.next));
+		}
+		// fmap f (Write x n) = Write x (f . n)
+		Prog<Res> operator()(const typename Prog<Next>::Write& write) const {
+			return Prog<Res>::write(write.x, compose(fun, write.next));
+		}
+	};
+	return boost::apply_visitor(Visitor{fun}, prog.v);
+}
+
+
+
+
+
+
+
+
+
+
+
+void testMonadFree() {
+	using namespace monad;
+	using namespace funcpp::free;
 }
 
 int main() {
 	try {
 		testEqPrimitive();
 		testEqList();
-		testFunctorInstance();
 		testMonoidPrimitive();
 		testMonoidList();
 		testMonadList();
+		testMonadFree();
 
 
 		std::cout << "***************************************\n";

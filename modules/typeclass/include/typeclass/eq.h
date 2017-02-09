@@ -1,33 +1,51 @@
 #pragma once
+#include <utility/global_instance.h>
+//#include <typeclass/eq_list.h>
+//#include <typeclass/eq_primitive.h>
+
 
 namespace funcpp::typeclass::eq {
 
-template <class T, typename = void> struct
-is_instance : std::false_type {};
+struct 
+__eq {
 
-template <class T> constexpr bool
-is_instance_v = is_instance<T>::value;
+	template <
+		typename T,
+		typename U,
+		typename = decltype(std::declval<T>() == std::declval<U>())
+	>
+	bool
+	constexpr operator() (T&& t, U&& u) const {
+		using namespace detail;
+		return equal(std::forward<T>(t), std::forward<U>(u));
+	}
 
-template <class T,typename = void> struct
-instance;
+};
 
 template <
 	typename T,
-    typename = std::enable_if_t<is_instance_v<T>>
+	typename U,
+	typename = decltype(std::declval<T>() == std::declval<U>())
 >
 bool
-operator == (T const& a, T const& b) {
-	return instance<T>::equal(a,b);
+operator == (T&& a, U&& b) {
+	return equal(std::forward<T>(a),std::forward<U>(b));
 }
 
 
 template <
 	typename T,
-    typename = std::enable_if_t<is_instance_v<T>>
+	typename U,
+	typename = decltype(std::declval<T>() != std::declval<U>())
 >
 bool 
-operator != (T const& a, T const& b) {
-	return !instance<T>::equal(a,b);
+operator != (T&& a, U&& b) {
+	return !equal(std::forward<T>(a),std::forward<U>(b));
+}
+
+namespace {
+
+	constexpr auto const& equal = funcpp::utility::global_instance<__eq>::value;
 }
 
 }

@@ -2,15 +2,12 @@
 
 namespace funcpp::typeclass::monad {
 
-template <template <typename...> class M> struct
-is_instance : std::false_type {};
-
+template <template <typename...> class M, typename = void> struct
+instance : std::false_type {};
 
 template <template <typename...> class M> constexpr bool
-is_instance_v = is_instance<M>::value;
+is_instance_v = instance<M>::value;
 
-template <template <typename...> class M> struct
-instance;
 
 template <
 	template <typename...> class M,
@@ -36,8 +33,7 @@ mbind(M<A> const& ma, Fn&& fn) {
 template <
 	template <typename...> class M,
     typename A,
-    typename Fn,
-    typename = std::enable_if_t<is_instance_v<M>>
+    typename Fn
 >
 auto
 operator >>= (M<A> const& ma, Fn&& fn) {
@@ -48,14 +44,12 @@ operator >>= (M<A> const& ma, Fn&& fn) {
 template <
 	template <typename...> class M,
     typename A,
-    typename B,
-    typename = std::enable_if_t<is_instance_v<M>>
+    typename B
 >
 auto
 operator >> (M<A> const& ma, M<B> const& mb) {
   return instance<M>::mbind(ma, [mb](auto&&){ return mb; });
 }
-
 
 
 }

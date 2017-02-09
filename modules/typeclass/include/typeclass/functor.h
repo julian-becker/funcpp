@@ -1,26 +1,31 @@
 #pragma once
+#include <typeclass/functor_list.h>
+#include <typeclass/functor_optional.h>
+#include <typeclass/functor_vector.h>
+#include <utility/global_instance.h>
+#include <type_traits>
 
 namespace funcpp::typeclass::functor {
 
-template <template <typename...> class F> struct
-is_instance : std::false_type {};
+struct 
+__fmap {
 
+	template <
+		template <typename...> class Container,
+	    typename ValueType,
+	    typename Fn
+	>
+	constexpr auto
+	operator() (Fn&& fn, Container<ValueType> const& container) const -> Container<std::result_of_t<Fn(ValueType)>> {
+		using namespace detail;
+		return fmap(std::forward<Fn>(fn), container);
+	}
 
-template <template <typename...> class F> constexpr bool
-is_instance_v = is_instance<F>::value;
+};
 
-template <template <typename...> class F> struct
-instance;
+namespace {
 
-template <
-	template <typename...> class Container,
-    typename ValueType,
-    typename Fn,
-    typename = std::enable_if_t<is_instance_v<Container>>
->
-Container<std::result_of_t<Fn(ValueType)>> 
-fmap(Fn&& fn, const Container<ValueType>& container) {
-	return instance<Container>::fmap(std::forward<Fn>(fn), container);
+	constexpr auto const& fmap = funcpp::utility::global_instance<__fmap>::value;
 }
 
 }

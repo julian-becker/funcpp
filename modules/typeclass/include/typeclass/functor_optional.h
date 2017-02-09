@@ -1,23 +1,14 @@
 #pragma once
-#include <typeclass/functor.h>
-#include <experimental/optional>
+#include <boost/optional.hpp>
 #include <type_traits>
 
-namespace funcpp::typeclass::functor {
+namespace funcpp::typeclass::functor::detail {
 
-template <> struct
-is_instance<std::experimental::optional> : std::true_type {};
-
-template <> struct
-instance<std::experimental::optional> {
-
-    template <typename Fn, typename A>
-    static auto fmap(Fn&& fn, const std::experimental::optional<A>& container) {
-		std::experimental::optional<std::result_of_t<Fn(A)>> result;
-		std::transform(container.begin(), container.end(), std::back_inserter(result), std::forward<Fn>(fn));
-		return result;
-    }
+template <typename Fn, typename A>
+auto fmap(Fn&& fn, const boost::optional<A>& container) {
+	boost::optional<std::result_of_t<Fn(A)>> result;
+	std::transform(container.begin(), container.end(), std::back_inserter(result), std::forward<Fn>(fn));
+	return result;
+}
     
-};
-
 }

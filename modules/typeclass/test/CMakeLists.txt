@@ -14,7 +14,7 @@ set(APP_SRCS
 )
 
  
-add_executable(TestApp1 ${APP_SRCS})
+add_executable(test_typeclass ${APP_SRCS})
 
 include_directories("${FUNCPP_MODULES_DIR}/typeclass/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")

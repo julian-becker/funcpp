@@ -4,6 +4,7 @@
 #include <typeclass/eq/vector.h>
 #include <typeclass/eq/scalar.h>
 #include <typeclass/monad/list.h>
+#include <typeclass/monad/future.h>
 
 TEST_CASE("typeclass monad") {
     using namespace funcpp::typeclass::monad;
@@ -19,10 +20,20 @@ TEST_CASE("typeclass monad") {
         REQUIRE((result == std::list<int>{1,2,2,3,3,3}));
     }
 
-    GIVEN("two lists of ints") {
-        std::list<int> a{2,3};
-        
-        auto result = a >> std::list<int>{10,11,12};
-        REQUIRE((result == std::list<int>{10,11,12,  10,11,12}));
+    GIVEN("a future of int") {
+        //std::promise<int> a;
+        auto fn = [](int a){
+            return std::async([a]{ return a + 100; });
+        };
+        auto a = mreturn<std::future>(50);
+        auto result = std::move(a) >>= fn;
+        REQUIRE(result.get() == 150);
+    }
+
+    GIVEN("a future of int") {
+        std::promise<int> a;
+        a.set_value(50);
+        auto result = a.get_future() >> mreturn<std::future>(42);
+        REQUIRE(result.get() == 42);
     }
 }

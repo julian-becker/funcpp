@@ -6,7 +6,7 @@
 namespace funcpp::typeclass::monad {
 
 template <> struct
-instance<std::list> : std::true_type {
+monad_class<std::list> : std::true_type {
 
 	template <typename A>
 	static std::list<std::decay_t<A>> mreturn(A&& value) {

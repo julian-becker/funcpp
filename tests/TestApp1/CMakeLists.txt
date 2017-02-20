@@ -9,6 +9,7 @@ set(APP_SRCS
 	${SRC_DIR}/typeclass/functor.cpp
 	${SRC_DIR}/typeclass/monoid.cpp
 	${SRC_DIR}/typeclass/monad.cpp
+	${SRC_DIR}/typeclass/show.cpp
 	${SRC_DIR}/main.cpp
 )
 

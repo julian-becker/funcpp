@@ -4,7 +4,7 @@ project (rootproject)
 
 # set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-std=c++1z -Wno-c++1z-extensions") # don't warn about C++1z extensions
+set(CMAKE_CXX_FLAGS "-std=c++1z -g -Wno-c++1z-extensions") # don't warn about C++1z extensions
 
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
  

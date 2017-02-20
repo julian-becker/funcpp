@@ -8,7 +8,9 @@
 
 TEST_CASE("typeclass monad") {
     using namespace funcpp::typeclass::monad;
+    using namespace funcpp::typeclass::monad::operators;
     using namespace funcpp::typeclass::eq;
+    using namespace funcpp::typeclass::eq::operators;
 
     GIVEN("two lists of ints") {
         std::list<int> a{1,2,3};

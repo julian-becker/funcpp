@@ -25,25 +25,27 @@ mappend(T const& a, T const& b) {
 	return monoid_class<T, Op>::mappend(a,b);
 }
 
-template <
-	typename T,
-    typename Op = std::plus<>,
-    typename = std::enable_if_t<monoid_class<T, Op>::value>
->
-auto
-operator + (T const& a, T const& b) {
-	return monoid_class<T, Op>::mappend(a,b);
+namespace operators {
+
+    template <
+    	typename T,
+        typename Op = std::plus<>,
+        typename = std::enable_if_t<monoid_class<T, Op>::value>
+    >
+    auto
+    operator + (T const& a, T const& b) {
+    	return monoid_class<T, Op>::mappend(a,b);
+    }
+
+    template <
+    	typename T,
+        typename Op = std::multiplies<>,
+        typename = std::enable_if_t<monoid_class<T, Op>::value>
+    >
+    auto
+    operator * (T const& a, T const& b) {
+    	return monoid_class<T, Op>::mappend(a,b);
+    }
+
 }
-
-template <
-	typename T,
-    typename Op = std::multiplies<>,
-    typename = std::enable_if_t<monoid_class<T, Op>::value>
->
-auto
-operator * (T const& a, T const& b) {
-	return monoid_class<T, Op>::mappend(a,b);
-}
-
-
 }

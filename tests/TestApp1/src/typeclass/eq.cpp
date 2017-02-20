@@ -21,6 +21,7 @@ eq_class<Foo> : std::true_type {
 
 TEST_CASE("typeclass eq") {
     using namespace funcpp::typeclass::eq;
+    using namespace funcpp::typeclass::eq::operators;
     GIVEN("A custom class Foo implementing ") {
         // see definition of Foo above
         REQUIRE(equal(Foo{},Foo{}));

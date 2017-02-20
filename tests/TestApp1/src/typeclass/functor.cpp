@@ -15,6 +15,7 @@
 TEST_CASE("typeclass functor") {
     using namespace funcpp::typeclass::functor;
     using namespace funcpp::typeclass::eq;
+    using namespace funcpp::typeclass::eq::operators;
     GIVEN("a list of ints") {
         std::list<int> a{1,2,3};
         auto result = fmap([](auto x){ return x*2; }, a);

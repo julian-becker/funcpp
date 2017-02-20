@@ -11,7 +11,9 @@
 
 TEST_CASE("typeclass monoid") {
     using namespace funcpp::typeclass::monoid;
+    using namespace funcpp::typeclass::monoid::operators;
     using namespace funcpp::typeclass::eq;
+    using namespace funcpp::typeclass::eq::operators;
 
     GIVEN("two lists of ints") {
         std::list<int> a{1,2,3}, b{4,5,6,7};

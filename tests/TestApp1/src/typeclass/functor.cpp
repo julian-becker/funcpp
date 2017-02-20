@@ -1,6 +1,7 @@
 #include <catch.hpp>
 #include <typeclass/eq/list.h>
 #include <typeclass/eq/optional.h>
+#include <typeclass/eq/vector.h>
 #include <typeclass/eq/scalar.h>
 #include <typeclass/functor.h>
 #include <typeclass/functor/list.h>
@@ -16,6 +17,11 @@ TEST_CASE("typeclass functor") {
         std::list<int> a{1,2,3};
         auto result = fmap([](auto x){ return x*2; }, a);
         REQUIRE((std::list<int>{2,4,6} == result));
+    }
+    GIVEN("a vector of ints") {
+        std::vector<int> a{1,2,3};
+        auto result = fmap([](auto x){ return x*2; }, a);
+        REQUIRE((std::vector<int>{2,4,6} == result));
     }
     GIVEN("an optional int") {
         boost::optional<int> a{10};

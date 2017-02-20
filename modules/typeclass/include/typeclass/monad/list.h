@@ -1,5 +1,6 @@
 #pragma once
 #include <typeclass/monad.h>
+#include <typeclass/functor/list.h>
 #include <list>
 #include <type_traits>
 

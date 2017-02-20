@@ -1,4 +1,5 @@
 #pragma once
+#include <typeclass/functor.h>
 
 namespace funcpp::typeclass::monad {
 
@@ -9,6 +10,7 @@ monad_class;
 template <
 	template <typename...> class M,
     typename ValueType,
+    typename = std::enable_if_t<functor::functor_class<M>::value>,
     typename = std::enable_if_t<monad_class<M>::value>
 >
 M<std::decay_t<ValueType>> 
@@ -20,6 +22,7 @@ template <
 	template <typename...> class M,
     typename A,
     typename Fn,
+    typename = std::enable_if_t<functor::functor_class<M>::value>,
     typename = std::enable_if_t<monad_class<M>::value>
 >
 auto
@@ -31,6 +34,7 @@ template <
 	template <typename...> class M,
     typename A,
     typename Fn,
+    typename = std::enable_if_t<functor::functor_class<M>::value>,
     typename = std::enable_if_t<monad_class<M>::value>
 >
 auto
@@ -43,6 +47,7 @@ template <
 	template <typename...> class M,
     typename A,
     typename B,
+    typename = std::enable_if_t<functor::functor_class<M>::value>,
     typename = std::enable_if_t<monad_class<M>::value>
 >
 auto

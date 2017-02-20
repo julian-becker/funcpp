@@ -7,6 +7,7 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(APP_SRCS
 	${SRC_DIR}/typeclass/eq.cpp
 	${SRC_DIR}/typeclass/functor.cpp
+	${SRC_DIR}/typeclass/monoid.cpp
 	${SRC_DIR}/main.cpp
 )
 

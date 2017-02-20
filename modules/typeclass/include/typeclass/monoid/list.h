@@ -5,21 +5,8 @@
 
 namespace funcpp::typeclass::monoid {
 
-template <typename T> struct
-mappend_add_op<std::list<T>> {
-	using type = std::plus<void>;
-};
-
-template <typename T> struct
-mappend_multiplies_op<std::list<T>> {
-	// multiplication not defined
-};
-
 template <typename T> struct 
-is_instance<std::list<T>, std::plus<void>> : std::true_type {};
-
-template <typename T> struct 
-instance<std::list<T>, std::plus<void>> {
+monoid_class<std::list<T>, std::plus<void>> : std::true_type {
     
     static std::list<T> mempty() {
     	return {};

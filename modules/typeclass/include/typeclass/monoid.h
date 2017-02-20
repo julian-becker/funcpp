@@ -2,69 +2,47 @@
 
 namespace funcpp::typeclass::monoid {
 
-template <typename T> struct
-mappend_add_op {
-	using type = std::plus<T>;
-};
-
-template <typename T> using
-mappend_add_op_t = typename mappend_add_op<T>::type;
-
-template <typename T> struct
-mappend_multiplies_op {
-	using type = std::multiplies<T>;
-};
-
-template <typename T> using
-mappend_multiplies_op_t = typename mappend_multiplies_op<T>::type;
-
-
-
-template <class T, typename Op = mappend_add_op<T>, typename = void> struct
-is_instance : std::false_type {};
-
-template <class T, typename Op = mappend_add_op_t<T>> constexpr bool
-is_instance_v = is_instance<T, Op>::value;
-
 template <class T, typename, typename = void> struct
-instance;
+monoid_class;
 
 template <
 	typename T,
-	typename Op = mappend_add_op_t<T>,
-    typename = std::enable_if_t<is_instance_v<T,Op>>
+	typename Op = std::plus<>,
+    typename = std::enable_if_t<monoid_class<T, Op>::value>
 >
 auto
 mempty() {
-	return instance<T, Op>::mempty();
+	return monoid_class<T, Op>::mempty();
 }
 
 template <
 	typename T,
-	typename Op = mappend_add_op_t<T>,
-    typename = std::enable_if_t<is_instance_v<T,Op>>
+	typename Op = std::plus<>,
+    typename = std::enable_if_t<monoid_class<T, Op>::value>
 >
 auto
 mappend(T const& a, T const& b) {
-	return instance<T, Op>::mappend(a,b);
+	return monoid_class<T, Op>::mappend(a,b);
 }
 
 template <
 	typename T,
-    typename = std::enable_if_t<is_instance_v<T,mappend_add_op_t<T>>>
+    typename Op = std::plus<>,
+    typename = std::enable_if_t<monoid_class<T, Op>::value>
 >
 auto
 operator + (T const& a, T const& b) {
-	return instance<T, mappend_add_op_t<T>>::mappend(a,b);
+	return monoid_class<T, Op>::mappend(a,b);
 }
 
 template <
 	typename T,
-    typename = std::enable_if_t<is_instance_v<T,mappend_multiplies_op_t<T>>>
+    typename Op = std::multiplies<>,
+    typename = std::enable_if_t<monoid_class<T, Op>::value>
 >
 auto
 operator * (T const& a, T const& b) {
-	return instance<T, mappend_multiplies_op_t<T>>::mappend(a,b);
+	return monoid_class<T, Op>::mappend(a,b);
 }
 
 

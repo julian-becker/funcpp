@@ -16,13 +16,17 @@ show (T&& a) {
 	return show_class<std::decay_t<T>>::show(std::forward<T>(a));
 }
 
-template <
-	typename T,
-	typename = std::enable_if_t<show_class<std::decay_t<T>>::value>
->
-std::ostream& operator << (std::ostream& ostr, T&& value) {
-	ostr << show_class<std::decay_t<T>>::show(std::forward<T>(value));
-	return ostr;
+namespace operators {
+
+    template <
+    	typename T,
+    	typename = std::enable_if_t<show_class<std::decay_t<T>>::value>
+    >
+    std::ostream& operator << (std::ostream& ostr, T&& value) {
+    	ostr << show_class<std::decay_t<T>>::show(std::forward<T>(value));
+    	return ostr;
+    }
+
 }
 
 }

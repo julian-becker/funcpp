@@ -2,6 +2,7 @@
 #include <typeclass/eq.h>
 #include <typeclass/eq/scalar.h>
 #include <typeclass/eq/list.h>
+#include <typeclass/eq/vector.h>
 
 namespace {
     struct Foo {};
@@ -39,4 +40,11 @@ TEST_CASE("typeclass eq") {
         std::list<int> a{2,2,3}, b{1,2,3};
         REQUIRE(!equal(a,b));
     }
-}
+    GIVEN("two equal vectors of int") {
+        std::vector<int> a{1,2,3}, b{1,2,3};
+        REQUIRE(equal(a,b));
+    }
+    GIVEN("two different vectors of int") {
+        std::vector<int> a{2,2,3}, b{1,2,3};
+        REQUIRE(!equal(a,b));
+    }}

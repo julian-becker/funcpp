@@ -5,12 +5,16 @@ set (INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
  
 set(APP_SRCS
+	${SRC_DIR}/typeclass/eq.cpp
 	${SRC_DIR}/main.cpp
 )
 
  
 add_executable(TestApp1 ${APP_SRCS})
 include_directories("${FUNCPP_MODULES_DIR}/typeclass/include")
+
+include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")
+
 
 include_directories("${FUNCPP_EXTERNALS_DIR}/boost/libs/accumulators/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/boost/libs/algorithm/include")

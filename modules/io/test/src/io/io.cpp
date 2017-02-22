@@ -1,6 +1,7 @@
 #include <catch.hpp>
 #include <io/io.h>
 #include <testsupport/static_checks.h>
+#include <future>
 
 
 TEST_CASE("io<T>") {
@@ -39,6 +40,45 @@ TEST_CASE("io<T>") {
             THEN("calling `base_instance.run()` will yield the same result") {
                 auto value = base_instance.run();
                 REQUIRE(value == 42);
+            }
+        }
+    }
+
+    GIVEN("An `instance` of `io_const<int>`") {
+        double some_value = 23123.445;
+        io_constant<double> instance(some_value);
+
+        SECTION("static properties") {
+            using namespace std;
+            STATIC_ASSERT(is_copy_constructible<io_constant<double>>);
+            STATIC_ASSERT(is_move_constructible<io_constant<double>>);
+        }
+
+        WHEN("`instance.run()` is executed") {
+            auto value = instance.run();
+            THEN("it returns the value given in the constructor") {
+                REQUIRE(some_value == value);
+            }
+        }
+    }
+
+
+    GIVEN("An `instance` of move-only type `io_const<std::future<int>>`") {
+        int some_value = 23123;
+        std::promise<int> f;
+        f.set_value(some_value);
+        io_constant<std::future<int>> instance(f.get_future());
+
+        SECTION("static properties") {
+            using namespace std;
+            STATIC_ASSERT(!is_copy_constructible<io_constant<future<int>>>);
+            STATIC_ASSERT(is_move_constructible<io_constant<future<int>>>);
+        }
+
+        WHEN("`instance.run()` is executed") {
+            auto value = instance.run();
+            THEN("it returns the value given in the constructor") {
+                REQUIRE(some_value == value.get());
             }
         }
     }

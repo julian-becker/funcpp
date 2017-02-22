@@ -13,5 +13,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(FUNCPP_MODULES_DIR ${CMAKE_SOURCE_DIR}/modules)
 set(FUNCPP_EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/externals)
 
+add_subdirectory(${FUNCPP_MODULES_DIR}/basetypes)
 add_subdirectory(${FUNCPP_MODULES_DIR}/typeclass)
 add_subdirectory(${FUNCPP_MODULES_DIR}/io)
+add_subdirectory(${FUNCPP_MODULES_DIR}/testsupport)

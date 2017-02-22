@@ -10,18 +10,21 @@ io {
 protected:
     struct 
     Impl {
-        virtual ~Impl() {}
-        virtual T run_impl() = 0;
+        virtual 
+        ~Impl() {}
+
+        virtual T 
+        run_impl() const = 0;
     };
 
-    io(std::unique_ptr<Impl> impl) : m_impl{ std::move(impl) } {}
+    io(std::shared_ptr<Impl> impl) : m_impl{ std::move(impl) } {}
 
 private:
-    std::unique_ptr<Impl> m_impl;
+    std::shared_ptr<Impl> m_impl;
 
 public:
     T 
-    run() { return m_impl->run_impl(); }
+    run() const { return m_impl->run_impl(); }
 };
 
 }

@@ -13,6 +13,7 @@ set(APP_SRCS
 add_executable(test_persist ${APP_SRCS})
 
 include_directories("${FUNCPP_MODULES_DIR}/io/include")
+include_directories("${FUNCPP_MODULES_DIR}/testsupport/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")
 
 

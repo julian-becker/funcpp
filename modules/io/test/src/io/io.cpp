@@ -1,17 +1,29 @@
 #include <catch.hpp>
 #include <io/io.h>
+#include <testsupport/static_checks.h>
+
 
 TEST_CASE("io<T>") {
     using namespace funcpp::io;
+    using namespace funcpp::testsupport;
+
+    SECTION("type-properties") {
+        using namespace std;
+        STATIC_ASSERT(is_destructible<io<int>>);
+        STATIC_ASSERT(is_move_constructible<io<int>>);
+        STATIC_ASSERT(is_move_assignable<io<int>>);
+        STATIC_ASSERT(is_copy_constructible<io<int>>);
+        STATIC_ASSERT(is_copy_assignable<io<int>>);
+    }
 
     GIVEN("An implementation `test_io` of `io<int>` as well as an `instance` of this implementation") {
         struct test_io final : io<int> {
             struct Impl final : io<int>::Impl {
-                int run_impl() override {
+                int run_impl() const override {
                     return 42;
                 }
             };
-            test_io() : io<int>(std::make_unique<Impl>()) {}
+            test_io() : io<int>(std::make_shared<Impl>()) {}
         };
         test_io instance;
 

@@ -8,7 +8,7 @@
 namespace funcpp::io {
 
 template <typename T> class
-randomly_accessible 
+rw_accessible 
     : public readable<T>
     , public writable<T>
 {
@@ -22,7 +22,7 @@ private:
 public:
     using ImplForTestsOnly = Impl;
 
-    randomly_accessible(std::shared_ptr<Impl> impl) 
+    rw_accessible(std::shared_ptr<Impl> impl) 
         : readable<T>(impl)
         , writable<T>(impl)
     {}

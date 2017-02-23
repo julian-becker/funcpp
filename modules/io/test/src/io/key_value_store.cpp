@@ -14,16 +14,16 @@ TEST_CASE("key_value_store<std::string,int>") {
     GIVEN("An implementation `test_kvs` of `key_value_store<std::string,int>` as well as an `instance` of this implementation") {
         struct test_kvs final : key_value_store<std::string,int> {
             struct Impl final : key_value_store<std::string,int>::Impl {
-                io<randomly_accessible<int>> access_impl(std::string key) const override {
+                io<rw_accessible<int>> access_impl(std::string key) const override {
                     REQUIRE(key == "some_key");
 
-                    struct AccessibleMock final : randomly_accessible<int>::ImplForTestsOnly {
+                    struct AccessibleMock final : rw_accessible<int>::ImplForTestsOnly {
                         io<int> read_impl() const override { return io_constant<int>(123); }
                         io<unit_t> write_impl(int value) const override { 
                             REQUIRE(value == 0xF00BAA5);
                             return io_constant<unit_t>({}); }
                     };
-                    return io_constant<randomly_accessible<int>>(randomly_accessible<int>(std::make_shared<AccessibleMock>()));
+                    return io_constant<rw_accessible<int>>(rw_accessible<int>(std::make_shared<AccessibleMock>()));
                 }
             };
             

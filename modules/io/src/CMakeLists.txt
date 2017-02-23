@@ -4,6 +4,7 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(LIB_SRCS
 	${SRC_DIR}/main.cpp
+	${SRC_DIR}/file_system.cpp
 )
 
  

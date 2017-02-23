@@ -9,8 +9,9 @@ set(APP_SRCS
 	${SRC_DIR}/io/io.cpp
 	${SRC_DIR}/io/writable.cpp
 	${SRC_DIR}/io/readable.cpp
-	${SRC_DIR}/io/randomly_accessible.cpp
+	${SRC_DIR}/io/rw_accessible.cpp
 	${SRC_DIR}/io/key_value_store.cpp
+	${SRC_DIR}/io/file_system.cpp
 )
 
 add_executable(test_libio ${APP_SRCS})

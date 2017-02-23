@@ -1,6 +1,6 @@
 #pragma once
 #include <io/io.h>
-#include <io/randomly_accessible.h>
+#include <io/rw_accessible.h>
 #include <memory>
 
 namespace funcpp::io {
@@ -13,7 +13,7 @@ key_value_store {
 protected:
     struct Impl {
         virtual ~Impl() {}
-        virtual io<randomly_accessible<Value>> access_impl(Key) const = 0;
+        virtual io<rw_accessible<Value>> access_impl(Key) const = 0;
     };
 
 private:
@@ -24,7 +24,7 @@ public:
         : m_impl{ std::move(impl) }
     {}
 
-    io<randomly_accessible<Value>> access(Key const& key) const {
+    io<rw_accessible<Value>> access(Key const& key) const {
         return m_impl->access_impl(key);
     }
 };

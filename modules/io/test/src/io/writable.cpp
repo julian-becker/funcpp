@@ -1,31 +1,31 @@
 #include <catch.hpp>
 #include <io/io.h>
-#include <io/writer.h>
+#include <io/writable.h>
 #include <testsupport/static_checks.h>
 
 
-TEST_CASE("writer<T>") {
+TEST_CASE("writable<T>") {
     using namespace funcpp::basetypes;
     using namespace funcpp::io;
     using namespace funcpp::testsupport;
 
     SECTION("type-properties") {
         using namespace std;
-        STATIC_ASSERT(is_destructible<writer<int>>);
-        STATIC_ASSERT(is_move_constructible<writer<int>>);
-        STATIC_ASSERT(is_move_assignable<writer<int>>);
-        STATIC_ASSERT(is_copy_constructible<writer<int>>);
-        STATIC_ASSERT(is_copy_assignable<writer<int>>);
+        STATIC_ASSERT(is_destructible<writable<int>>);
+        STATIC_ASSERT(is_move_constructible<writable<int>>);
+        STATIC_ASSERT(is_move_assignable<writable<int>>);
+        STATIC_ASSERT(is_copy_constructible<writable<int>>);
+        STATIC_ASSERT(is_copy_assignable<writable<int>>);
     }
 
-    GIVEN("An implementation `test_write` of `writer<int>` as well as an `instance` of this implementation") {
-        struct test_write final : writer<int> {
-            struct Impl final : writer<int>::Impl {
+    GIVEN("An implementation `test_write` of `writable<int>` as well as an `instance` of this implementation") {
+        struct test_write final : writable<int> {
+            struct Impl final : writable<int>::Impl {
                 io<unit_t> write_impl(int) const override {
                     return io_constant<unit_t>({});
                 }
             };
-            test_write() : writer<int>(std::make_shared<Impl>()) {}
+            test_write() : writable<int>(std::make_shared<Impl>()) {}
         };
         test_write instance;
 

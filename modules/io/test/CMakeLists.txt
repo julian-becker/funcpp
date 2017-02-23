@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project (TestApp1)
+project (test_libio)
  
 set (INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -7,11 +7,13 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(APP_SRCS
 	${SRC_DIR}/main.cpp
 	${SRC_DIR}/io/io.cpp
-	${SRC_DIR}/io/write.cpp
+	${SRC_DIR}/io/writable.cpp
+	${SRC_DIR}/io/readable.cpp
 )
 
- 
-add_executable(test_persist ${APP_SRCS})
+add_executable(test_libio ${APP_SRCS})
+target_link_libraries(test_libio io)
+
 
 include_directories("${FUNCPP_MODULES_DIR}/basetypes/include")
 include_directories("${FUNCPP_MODULES_DIR}/io/include")

@@ -6,7 +6,7 @@
 namespace funcpp::io {
 
 template <typename T> class
-writer {
+writable {
 protected:
     struct 
     Impl {
@@ -21,7 +21,7 @@ private:
     std::shared_ptr<Impl> m_impl;
 
 public:
-    writer(std::shared_ptr<Impl> impl) : m_impl{ std::move(impl) } {}
+    writable(std::shared_ptr<Impl> impl) : m_impl{ std::move(impl) } {}
 
     io<basetypes::unit_t>
     write(T value) const { return m_impl->write_impl(std::move(value)); }

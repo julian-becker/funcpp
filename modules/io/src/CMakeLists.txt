@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project (TestApp1)
- 
+
 set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(LIB_SRCS
@@ -8,9 +7,11 @@ set(LIB_SRCS
 )
 
  
-add_library(persist ${LIB_SRCS})
+add_library(io ${LIB_SRCS})
 
-include_directories("${FUNCPP_MODULES_DIR}/persist/include")
+include_directories("${FUNCPP_MODULES_DIR}/basetypes/include")
+include_directories("${FUNCPP_MODULES_DIR}/io/include")
+include_directories("${FUNCPP_MODULES_DIR}/typeclass/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")
 
 

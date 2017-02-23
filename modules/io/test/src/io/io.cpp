@@ -42,9 +42,23 @@ TEST_CASE("io<T>") {
                 REQUIRE(value == 42);
             }
         }
+
+        WHEN("a `continuation` is chained with the `instance`") {
+            auto result = instance.then([](int value) -> io<double> {
+                return io_constant<double>(value + 1000.0);
+            });
+
+            THEN("running the `result` will chain the result of the "
+                 "execution of `instance` into the execution of the "
+                 "continuation") {
+                REQUIRE(result.run() == 1042);
+            }
+        }
     }
 
-    GIVEN("An `instance` of `io_const<int>`") {
+
+
+    GIVEN("An `instance` of `io_constant<int>`") {
         double some_value = 23123.445;
         io_constant<double> instance(some_value);
 
@@ -82,4 +96,22 @@ TEST_CASE("io<T>") {
             }
         }
     }
+}
+
+
+TEST_CASE("io_action<T>")  {
+    using namespace funcpp::io;
+    using namespace funcpp::testsupport;
+
+    GIVEN("an `instance` of io_action<int>") {
+        io_action<int> instance([]{ return 123; });
+        WHEN("the action is run") {
+            auto result = instance.run();
+            THEN("the result is the return value of the lambda given "
+                 "to the constructor of the `instance`") {
+                REQUIRE(result == 123);
+            }
+        }
+    }
+
 }

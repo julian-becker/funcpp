@@ -11,28 +11,14 @@ io;
 
 template <typename T> class
 io<T, true> {
-    template <typename, bool> friend class io;
-protected:
-    struct 
-    Impl {
-        virtual 
-        ~Impl() {}
-
-        virtual T 
-        run_impl() const = 0;
-    };
-
-private:
-    std::shared_ptr<Impl> m_impl;
-
 public:
-    io(std::shared_ptr<Impl> impl) 
-        : m_impl{ std::move(impl) } 
-    {}
+    using value_type = T;
+private:
+    template <typename, bool> friend class io;
 
     template <typename U>
     io<U> 
-    then(std::function<io<U>(T)> fn) const {
+    then_internal(std::function<io<U>(T)> fn) const {
         struct 
         ThenImpl : io<U>::Impl {
             std::shared_ptr<Impl> m_impl;
@@ -52,13 +38,32 @@ public:
         return io<U>(std::make_shared<ThenImpl>(m_impl, std::move(fn)));
     }
 
+
+protected:
+    struct 
+    Impl {
+        virtual 
+        ~Impl() {}
+
+        virtual T 
+        run_impl() const = 0;
+    };
+
+private:
+    std::shared_ptr<Impl> m_impl;
+
+public:
+    io(std::shared_ptr<Impl> impl) 
+        : m_impl{ std::move(impl) } 
+    {}
+
     template 
         < typename Fn
         , typename result_t = std::result_of_t<Fn(T)> 
     >
     auto
-    then(Fn&& fn) const -> result_t {
-        return then(std::function<result_t(T)>(std::forward<Fn>(fn)));
+    then(Fn&& fn) const -> io<typename result_t::value_type> {
+        return then_internal(std::function<io<typename result_t::value_type>(T)>(std::forward<Fn>(fn)));
     }
 
     T 

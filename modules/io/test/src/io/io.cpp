@@ -54,6 +54,19 @@ TEST_CASE("io<T>") {
                 REQUIRE(result.run() == 1042);
             }
         }
+
+
+        WHEN("a `continuation` returning an `io_constant<T>` is chained with the `instance`") {
+            auto result = instance.then([](int value) -> io_constant<double> {
+                return io_constant<double>(value + 1000.0);
+            });
+
+            THEN("running the `result` will chain the result of the "
+                 "execution of `instance` into the execution of the "
+                 "continuation") {
+                REQUIRE(result.run() == 1042);
+            }
+        }
     }
 
 

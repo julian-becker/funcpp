@@ -7,6 +7,7 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(APP_SRCS
 	${SRC_DIR}/main.cpp
 	${SRC_DIR}/io/io.cpp
+	${SRC_DIR}/io/io_monad.cpp
 	${SRC_DIR}/io/writable.cpp
 	${SRC_DIR}/io/readable.cpp
 	${SRC_DIR}/io/rw_accessible.cpp
@@ -20,6 +21,7 @@ target_link_libraries(test_libio io)
 
 include_directories("${FUNCPP_MODULES_DIR}/basetypes/include")
 include_directories("${FUNCPP_MODULES_DIR}/io/include")
+include_directories("${FUNCPP_MODULES_DIR}/typeclass/include")
 include_directories("${FUNCPP_MODULES_DIR}/testsupport/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")
 

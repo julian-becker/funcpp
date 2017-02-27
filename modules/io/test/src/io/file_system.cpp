@@ -14,12 +14,12 @@ TEST_CASE("filesystem") {
     GIVEN("An instance of file_system") {
         file_system fs;
 
-        std::size_t testdata_size = 1024ull*1024ull;
+        std::size_t testdata_size = 1024ull*1024ull*1ull;
         std::vector<uint8_t> testdata(testdata_size);
         for(std::size_t i = 0u; i<testdata_size; ++i)
             testdata[i] = i % 256;
 
-        THEN("we can actually write into the file") {
+        WHEN("we write into file a file") {
             file_name filename("/tmp/testfile");
             {
                 fs.access(filename).then([](auto h){
@@ -30,14 +30,14 @@ TEST_CASE("filesystem") {
             }
 
 
-            AND_THEN("reading from the same file produces the written date") {
+            THEN("reading from the same file produces the written date") {
                 auto result = fs.access(filename).then([](auto h){
                     return h.open();
                 }).then([](auto file){ 
                     return file.read(); 
                 }).run();
-
-                REQUIRE(result == testdata);
+                REQUIRE(testdata.size() == result.size());
+                REQUIRE(testdata == result);
             }
 
         }

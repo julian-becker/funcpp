@@ -6,15 +6,15 @@
 
 namespace funcpp::io {
 
-template <typename T, bool = std::is_copy_constructible<T>::value> class
+template <typename T, typename = void> class
 io;
 
 template <typename T> class
-io<T, true> {
+io<T, std::enable_if_t<std::is_copy_constructible<T>::value>> {
 public:
     using value_type = T;
 private:
-    template <typename, bool> friend class io;
+    template <typename, typename> friend class io;
 
     template <typename U>
     io<U> 
@@ -72,7 +72,7 @@ public:
 
 
 template <typename T> class
-io<T, false> {
+io<T, std::enable_if_t<!std::is_copy_constructible<T>::value>> {
 protected:
     struct 
     Impl {
@@ -96,16 +96,17 @@ public:
 };
 
 
-template <typename T, bool = std::is_copy_constructible<T>::value> class
+template <typename T, typename = void> class
 io_constant;
 
 template <typename T> class
-io_constant<T, true> final : public io<T> {
+io_constant<T, std::enable_if_t<std::is_copy_constructible<T>::value>> final : public io<T> {
     struct 
     Impl final : io<T>::Impl {
         T m_value;
 
-        T run_impl() const override {
+        T 
+        run_impl() const override {
             return m_value;
         }
 
@@ -122,11 +123,13 @@ public:
 };
 
 template <typename T> class
-io_constant<T, false> final : public io<T> {
+io_constant<T, std::enable_if_t<!std::is_copy_constructible<T>::value>> final : public io<T> {
     struct 
     Impl final : io<T>::Impl {
         mutable T m_value;
-        T run_impl() override {
+        
+        T 
+        run_impl() override {
             return std::move(m_value);
         }
 
@@ -148,7 +151,8 @@ io_action final : public io<T> {
     Impl final : io<T>::Impl {
         std::function<T()> m_action;
 
-        T run_impl() const override {
+        T 
+        run_impl() const override {
             return m_action();
         }
 

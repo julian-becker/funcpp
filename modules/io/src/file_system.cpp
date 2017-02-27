@@ -2,6 +2,7 @@
 #include <io/io.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/uio.h>
 #include <unistd.h>
 #include <iostream>
@@ -16,14 +17,19 @@ static auto write_extern_c = &write;
 io<std::vector<uint8_t>> 
 file::Impl::read_impl() const {
     return io_action<std::vector<uint8_t>>([path=m_path]{
+        static constexpr std::size_t buffer_size = 1024ull * 1024ull;
         auto fd = open(path.c_str(), O_RDONLY);
+        if(fd == -1)
+            throw std::runtime_error("couldn't open file");
+
+        auto e = errno;
         std::vector<uint8_t> buffer;
         try {
             ssize_t s = 0, ss = 0;
             do {
                 s += ss;
-                buffer.resize(s + 512u);
-                ss = read_extern_c(fd, buffer.data() + s, 512u);
+                buffer.resize(s + buffer_size);
+                ss = read_extern_c(fd, buffer.data() + s, buffer_size);
             } while(0 < ss);
             buffer.resize(s);
         } catch(...) {
@@ -39,6 +45,13 @@ io<basetypes::unit_t>
 file::Impl::write_impl(std::vector<uint8_t> data) const {
     return io_action<unit_t>([path=m_path, data=std::move(data)]{
         auto fd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
+
+        if(fd == -1)
+            throw std::runtime_error("couldn't open file");
+        
+        if(-1 == fchmod(fd,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP))
+            throw std::runtime_error("couldn't set file permissions");
+
         try {
             ssize_t s = 0, ss = 0;
             do {

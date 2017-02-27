@@ -2,7 +2,7 @@
 #include <io/io.h>
 #include <testsupport/static_checks.h>
 #include <future>
-
+#include <typeclass/monad.h>
 
 TEST_CASE("io<T>") {
     using namespace funcpp::io;

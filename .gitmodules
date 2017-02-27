@@ -4,3 +4,6 @@
 [submodule "externals/catch"]
 	path = externals/catch
 	url = https://github.com/philsquared/Catch.git
+[submodule "externals/hippomocks"]
+	path = externals/hippomocks
+	url = https://github.com/julian-becker/hippomocks.git

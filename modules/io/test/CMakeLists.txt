@@ -6,6 +6,7 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(APP_SRCS
 	${SRC_DIR}/main.cpp
+	${SRC_DIR}/io/console.cpp
 	${SRC_DIR}/io/io.cpp
 	${SRC_DIR}/io/io_monad.cpp
 	${SRC_DIR}/io/writable.cpp
@@ -25,6 +26,7 @@ include_directories("${FUNCPP_MODULES_DIR}/typeclass/include")
 include_directories("${FUNCPP_MODULES_DIR}/testsupport/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/catch/single_include")
 
+include_directories("${FUNCPP_EXTERNALS_DIR}/hippomocks/HippoMocks")
 
 include_directories("${FUNCPP_EXTERNALS_DIR}/boost/libs/accumulators/include")
 include_directories("${FUNCPP_EXTERNALS_DIR}/boost/libs/algorithm/include")

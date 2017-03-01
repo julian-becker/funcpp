@@ -112,6 +112,57 @@ TEST_CASE("io<T>") {
 }
 
 
+
+
+
+
+
+TEST_CASE("io<T> conversion to io<U>") {
+    using namespace funcpp::io;
+    using namespace funcpp::testsupport;
+
+    GIVEN("Two types A and B, where A is convertible to B") {
+        struct B {
+            int b_val = 42;
+        };
+
+        struct A {
+            int a_val = 77;
+            operator B() {
+                return { 43 };
+            }
+        };
+
+        WHEN("an `instance_a` of type `io<A>` is assigned to `instance_b` of type `io<B>`") {
+            io<A> instance_a = io_constant<A>({});
+            io<B> instance_b = instance_a;
+            THEN("running the action of `instance_b` results in the conversion/assignment "
+                 "from the result of the action of `instance_a`") 
+            {
+                REQUIRE(instance_b.run().b_val == 43);
+            }
+        }
+
+        WHEN("an `instance_b` of type `io<B>` is assigned to `instance_a` of type `io<A>` "
+             "where B is not convertible to A") 
+        {
+            io<B> instance_b = io_constant<B>({});
+            THEN("Things don't compile...") 
+            {
+                /// Not possible presently to check for compilation errors
+                /// REQUIRE_FAILS_COMPILATION(io<A> instance_a = instance_b);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
 TEST_CASE("io_action<T>")  {
     using namespace funcpp::io;
     using namespace funcpp::testsupport;

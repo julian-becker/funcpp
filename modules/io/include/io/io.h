@@ -7,6 +7,9 @@
 namespace funcpp::io {
 
 template <typename T, typename = void> class
+io_constant;
+
+template <typename T, typename = void> class
 io;
 
 template <typename T> class
@@ -57,6 +60,17 @@ public:
         : m_impl{ std::move(impl) } 
     {}
 
+    template
+        < typename U
+        , typename = std::enable_if_t<std::is_convertible<T,U>::value>
+        >
+    operator io<U> () const {
+        return then([this](auto&& val_T) -> io<U> {
+            return io_constant<U>(static_cast<U>(val_T));
+        });
+    }
+
+
     template 
         < typename Fn
         , typename result_t = std::result_of_t<Fn(T)> 
@@ -96,8 +110,6 @@ public:
 };
 
 
-template <typename T, typename = void> class
-io_constant;
 
 template <typename T> class
 io_constant<T, std::enable_if_t<std::is_copy_constructible<T>::value>> final : public io<T> {

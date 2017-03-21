@@ -17,4 +17,6 @@ add_subdirectory(${FUNCPP_MODULES_DIR}/basetypes)
 add_subdirectory(${FUNCPP_MODULES_DIR}/typeclass)
 add_subdirectory(${FUNCPP_MODULES_DIR}/io)
 add_subdirectory(${FUNCPP_MODULES_DIR}/testsupport)
+add_subdirectory(${FUNCPP_MODULES_DIR}/mpl)
 add_subdirectory(${FUNCPP_MODULES_DIR}/playground)
+

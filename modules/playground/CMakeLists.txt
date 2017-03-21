@@ -6,7 +6,7 @@ set (SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
  
 set(APP_SRCS
 	${SRC_DIR}/main.cpp
-	${SRC_DIR}/html.cpp
+	${SRC_DIR}/play1.cpp
 	${SRC_DIR}/resource_orchestration.cpp
 )
 
